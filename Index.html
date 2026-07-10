@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading...</title>
+
+<style>
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Courier New, monospace;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+#start{
+    padding:15px 35px;
+    font-size:22px;
+    cursor:pointer;
+}
+
+#screen{
+    display:none;
+    text-align:center;
+}
+
+#skull{
+    font-size:120px;
+    animation: pulse .8s infinite alternate;
+}
+
+#msg{
+    color:#00ff44;
+    font-size:28px;
+    text-shadow:0 0 10px #00ff44;
+    margin-top:20px;
+    white-space:pre-line;
+}
+
+@keyframes pulse{
+    from{transform:scale(1);}
+    to{transform:scale(1.15);}
+}
+
+.shake{
+    animation:shake .08s infinite;
+}
+
+@keyframes shake{
+0%{transform:translate(2px,2px);}
+25%{transform:translate(-2px,1px);}
+50%{transform:translate(2px,-2px);}
+75%{transform:translate(-2px,-2px);}
+100%{transform:translate(2px,1px);}
+}
+</style>
+</head>
+
+<body>
+
+<button id="start">Tap to Continue</button>
+
+<div id="screen">
+<div id="skull">💀</div>
+<div id="msg"></div>
+</div>
+
+<script>
+
+const messages=[
+"SYSTEM BREACH DETECTED...",
+"SCANNING DEVICE...",
+"DOWNLOADING MEMES...",
+"JUST KIDDING 😂",
+"YOU GOT PRANKED!"
+];
+
+const start=document.getElementById("start");
+const screen=document.getElementById("screen");
+const msg=document.getElementById("msg");
+
+start.onclick=()=>{
+
+start.style.display="none";
+screen.style.display="block";
+
+let i=0;
+
+document.body.classList.add("shake");
+
+const ctx=new (window.AudioContext||window.webkitAudioContext)();
+
+function beep(freq,time){
+const osc=ctx.createOscillator();
+const gain=ctx.createGain();
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.frequency.value=freq;
+osc.start();
+gain.gain.setValueAtTime(.15,ctx.currentTime);
+gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+time);
+osc.stop(ctx.currentTime+time);
+}
+
+const interval=setInterval(()=>{
+
+msg.textContent=messages[i];
+
+beep(350+Math.random()*300,.12);
+
+i++;
+
+if(i>=messages.length){
+clearInterval(interval);
+
+setTimeout(()=>{
+document.body.classList.remove("shake");
+msg.innerHTML="<span style='color:#00ff44'>😄 It was only a prank!</span>";
+},2000);
+
+}
+
+},1800);
+
+};
+
+</script>
+
+</body>
+</html>
